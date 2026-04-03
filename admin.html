@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel | MaikolFollowers</title>
+    <style>
+        body { background: #000; color: #fff; font-family: sans-serif; padding: 50px; text-align: center; }
+        input { padding: 12px; margin: 5px; border-radius: 5px; border: 1px solid #d4af37; background: #111; color: #fff; width: 250px; }
+        button { background: #d4af37; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        .box { background: #111; padding: 30px; border-radius: 10px; display: inline-block; border: 1px solid #333; }
+        .listado { margin-top: 30px; text-align: left; max-width: 500px; margin-left: auto; margin-right: auto; }
+        .item { background: #222; padding: 10px; margin-bottom: 5px; border-radius: 5px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+
+    <div id="login">
+        <h2>Panel de Administración Oculto</h2>
+        <input type="password" id="pass" placeholder="Introduce la contraseña">
+        <button onclick="validar()">Entrar</button>
+    </div>
+
+    <div id="panel" style="display:none;">
+        <h1>Gestionar Servicios</h1>
+        <div class="box">
+            <input type="text" id="red" placeholder="Red (Ej: TikTok)">
+            <input type="text" id="item" placeholder="Servicio (Ej: 10k Vistas)">
+            <input type="number" id="precio" placeholder="Precio Base ($)" step="0.01">
+            <button onclick="agregar()">Añadir Servicio</button>
+        </div>
+        <div class="listado" id="lista"></div>
+        <br><br>
+        <button onclick="localStorage.removeItem('maikol_pro_db'); location.reload();" style="background:red;">LIMPIAR TODO EL CATÁLOGO</button>
+    </div>
+
+    <script>
+        function validar() {
+            // AQUÍ PUEDES CAMBIAR TU CONTRASEÑA
+            if(document.getElementById('pass').value === "MaikolPro2026") {
+                document.getElementById('login').style.display = "none";
+                document.getElementById('panel').style.display = "block";
+                dibujar();
+            } else { alert("Contraseña incorrecta"); }
+        }
+
+        let db = JSON.parse(localStorage.getItem('maikol_pro_db')) || [];
+
+        function agregar() {
+            const r = document.getElementById('red').value;
+            const i = document.getElementById('item').value;
+            const p = document.getElementById('precio').value;
+            if(r && i && p) {
+                db.push({ red: r, item: i, precio: parseFloat(p), icon: 'fa-star' });
+                localStorage.setItem('maikol_pro_db', JSON.stringify(db));
+                location.reload();
+            }
+        }
+
+        function dibujar() {
+            const l = document.getElementById('lista');
+            l.innerHTML = "<h3>Servicios Activos:</h3>";
+            db.forEach((s) => {
+                l.innerHTML += `<div class="item"><span>${s.red} - ${s.item}</span> <b>$${s.precio}</b></div>`;
+            });
+        }
+    </script>
+</body>
+</html>
+
